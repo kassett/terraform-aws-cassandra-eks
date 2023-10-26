@@ -25,7 +25,7 @@ variable "replicas" {
 
 variable "helm_chart_version" {
   type = string
-  default = "latest"
+  default = null
   description = "Specify the version of the Helm chart for the database. Default to latest."
 }
 
