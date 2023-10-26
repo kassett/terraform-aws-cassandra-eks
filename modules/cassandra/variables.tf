@@ -106,3 +106,8 @@ variable "datacenter-name" {
   type = string
   default = null
 }
+
+variable "storage_class" {
+  type = string
+  default = "gp2"
+}
