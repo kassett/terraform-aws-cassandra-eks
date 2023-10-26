@@ -10,7 +10,7 @@ locals {
 
 resource "helm_release" "db" {
   repository = "https://charts.bitnami.com/bitnami"
-  chart = "bitnami/cassandra"
+  chart = "cassandra"
   namespace = var.cassandra_namespace
   name = "cassandra"
   version = var.helm_chart_version
