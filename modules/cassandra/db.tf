@@ -4,7 +4,7 @@ locals {
     "image.registry" = var.image_registry
     "image.repository" = var.image_repository
     "image.tag" = var.image_tag
-    "persistence.storageClass" = var.storage_class
+#    "persistence.storageClass" = var.storage_class
   }
 }
 
