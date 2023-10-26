@@ -1,7 +1,7 @@
 
 variable "image_repository" {
   type = string
-  default = "cassandra"
+  default = "bitnami/cassandra"
   description = "Specify a custom image repository. Defaults to the official Cassandra repo."
 }
 
