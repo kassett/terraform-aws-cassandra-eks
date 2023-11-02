@@ -10,6 +10,8 @@ locals {
     "image.registry"            = var.image-registry
     "image.repository"          = var.image-repository
     "image.tag"                 = var.image-tag
+    "replicas"                  = var.replicas
+    "cluster.seedCount"         = var.seed-count
     "persistence.storageClass"  = var.storage-class
     "service.type"              = var.service-type
     "service.ports.cql"         = var.cql-port
