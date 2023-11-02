@@ -1,10 +1,10 @@
 
 output "username" {
-  value     = var.user
+  value     = var.username
   sensitive = true
 }
 
 output "password" {
-  value     = data.external.db.result.password
+  value     = var.password != null ? var.password : random_password.db[0].result
   sensitive = true
 }

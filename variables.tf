@@ -19,14 +19,13 @@ variable "image-tag" {
 
 variable "replicas" {
   type        = number
-  default     = 3
   description = "Number of Cassandra nodes."
 }
 
 variable "helm-chart-version" {
   type        = string
   default     = null
-  description = "Specify the version of the Helm chart for the database. Default to latest."
+  description = "Specify the version of the Helm chart for the database. When not specified, the latest version will be used."
 }
 
 variable "additional-db-helm-configurations" {
@@ -36,18 +35,21 @@ variable "additional-db-helm-configurations" {
 }
 
 variable "cassandra-namespace" {
-  type    = string
-  default = "cassandra"
+  type        = string
+  default     = "cassandra"
+  description = "The namespace of the Cassandra statefulset."
 }
 
 variable "enable-prometheus-metrics" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "When specified as true, a sidecar will be spun up for shipping Cassandra logs to Prometheus."
 }
 
 variable "prometheus-namespace" {
-  type    = string
-  default = "monitoring"
+  type        = string
+  default     = "monitoring"
+  description = "The namespace of the Prometheus sidecar."
 }
 
 variable "prometheus-scraping-interval" {
@@ -57,8 +59,9 @@ variable "prometheus-scraping-interval" {
 }
 
 variable "service-type" {
-  type    = string
-  default = "LoadBalancer"
+  type        = string
+  default     = "LoadBalancer"
+  description = "The type of service exposing the Cassandra statefulset. Other options include ClusterIP and NodePort."
 }
 
 variable "prometheus-annotations" {
@@ -89,12 +92,14 @@ variable "username" {
 }
 
 variable "password" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
+  description = "If the password is left as null, it will be automatically generated."
 }
 
 variable "seed-count" {
-  type = number
+  type        = number
+  description = "The number of seed nodes for persistence."
 }
 
 variable "rack-name" {
@@ -116,13 +121,18 @@ variable "enable-alerting" {
   type    = bool
   default = true
   validation {
-    condition = var.enable-prometheus-metrics
+    condition     = var.enable-prometheus-metrics == true && var.cloudwatch-alarm-arn != null
+    error_message = "Alerts can only work if Prometheus metrics are enabled and a Cloudwatch alarm ARN is provided."
   }
 }
 
 variable "cloudwatch-alarm-arn" {
   type    = string
   default = null
+  validation {
+    condition     = var.enable-alerting == true
+    error_message = "Alerting must be enabled for the Cloudwatch alarm to be utilised."
+  }
 }
 
 variable "environment" {
@@ -131,47 +141,48 @@ variable "environment" {
 }
 
 variable "dbs-credentials-secrets" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
+  description = "If a secret name is specified, then an AWS Secret will be uploaded with the DNS hostnames, username, and password."
 }
 
 variable "annotations" {
-  type = map(string)
-  default = null
+  type        = map(string)
+  default     = null
   description = "Annotations for the Cassandra statefulset."
 }
 
 variable "labels" {
-  type = map(string)
-  default = null
+  type        = map(string)
+  default     = null
   description = "Labels for the Cassandra statefulset."
 }
 
 variable "service-account-name" {
-  type = string
-  default = "cassandra"
+  type        = string
+  default     = "cassandra"
   description = "The name of the service account for the statefulset to use."
 }
 
 variable "create-service-account" {
   default = true
-  type = bool
+  type    = bool
 }
 
 variable "service-account-annotations" {
-  type = map(string)
-  default = null
+  type        = map(string)
+  default     = null
   description = "The annotations for the service account for the Cassandra statefulset."
 }
 
 variable "volume-storage-size" {
-  type = number
-  default = 8
+  type        = number
+  default     = 8
   description = "The size (gigabytes) of the volumes."
 }
 
 variable "commit-log-volume-size" {
-  type = number
-  default = 2
+  type        = number
+  default     = 2
   description = "The size (gigabytes) of the commit log volume."
 }

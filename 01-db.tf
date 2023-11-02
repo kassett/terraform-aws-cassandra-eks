@@ -1,24 +1,24 @@
 
 resource "random_password" "db" {
-  count = var.password != null ? 1 : 0
-  length = 16
+  count       = var.password != null ? 1 : 0
+  length      = 16
   min_special = 2
 }
 
 locals {
   basic-db-configurations = {
-    "image.registry"           = var.image-registry
-    "image.repository"         = var.image-repository
-    "image.tag"                = var.image-tag
-    "persistence.storageClass" = var.storage-class
-    "service.type" = var.service-type
-    "service.ports.cql" = var.cql-port
-    "serviceAccount.name" = var.service-account-name
-    "serviceAccount.create" = var.create-service-account
-    "persistence.size" = var.volume-storage-size
+    "image.registry"            = var.image-registry
+    "image.repository"          = var.image-repository
+    "image.tag"                 = var.image-tag
+    "persistence.storageClass"  = var.storage-class
+    "service.type"              = var.service-type
+    "service.ports.cql"         = var.cql-port
+    "serviceAccount.name"       = var.service-account-name
+    "serviceAccount.create"     = var.create-service-account
+    "persistence.size"          = var.volume-storage-size
     "persistence.commitLogsize" = var.commit-log-volume-size
-    "dbUser.user" = var.username
-    "dbUser.password" = var.password != null ? random_password.db[0].result : var.password
+    "dbUser.user"               = var.username
+    "dbUser.password"           = var.password != null ? random_password.db[0].result : var.password
   }
 }
 
