@@ -1,6 +1,6 @@
 
 resource "random_password" "db" {
-  count       = var.password != null ? 1 : 0
+  count       = var.password == null ? 1 : 0
   length      = 16
   min_special = 2
 }
@@ -18,7 +18,7 @@ locals {
     "persistence.size"          = var.volume-storage-size
     "persistence.commitLogsize" = var.commit-log-volume-size
     "dbUser.user"               = var.username
-    "dbUser.password"           = var.password != null ? random_password.db[0].result : var.password
+    "dbUser.password"           = var.password != null ? var.password : random_password.db[0].result
   }
 }
 
