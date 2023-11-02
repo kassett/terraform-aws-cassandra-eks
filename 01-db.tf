@@ -42,6 +42,12 @@ resource "helm_release" "db" {
   }
 }
 
+data "kubernetes_service" "db" {
+  namespace = helm_release.db.namespace
+  name      = "cassandra"
+  depends_on = [helm_release.db]
+}
+
 resource "aws_secretsmanager_secret" "db" {
   count       = var.dbs-credentials-secrets != null ? 1 : 0
   name_prefix = var.dbs-credentials-secrets
@@ -53,5 +59,6 @@ resource "aws_secretsmanager_secret_version" "db" {
   secret_string = jsonencode({
     "username" = var.username
     "password" = var.password != null ? var.password : random_password.db[0].result
+    uri        = try(data.kubernetes_service.db.status.0.load_balancer.0.ingress.0.hostname, "")
   })
 }
