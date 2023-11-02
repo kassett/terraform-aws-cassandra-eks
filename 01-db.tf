@@ -10,7 +10,7 @@ locals {
     "image.registry"            = var.image-registry
     "image.repository"          = var.image-repository
     "image.tag"                 = var.image-tag
-    "replicas"                  = var.replicas
+    "replicaCount"              = var.replicas
     "cluster.seedCount"         = var.seed-count
     "persistence.storageClass"  = var.storage-class
     "service.type"              = var.service-type
@@ -55,4 +55,3 @@ resource "aws_secretsmanager_secret_version" "db" {
     "password" = var.password != null ? var.password : random_password.db[0].result
   })
 }
-
