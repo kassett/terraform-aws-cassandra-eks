@@ -120,18 +120,14 @@ variable "storage-class" {
 variable "enable-alerting" {
   type    = bool
   default = true
-  validation {
-    condition     = var.enable-prometheus-metrics == true && var.cloudwatch-alarm-arn != null
-    error_message = "Alerts can only work if Prometheus metrics are enabled and a Cloudwatch alarm ARN is provided."
-  }
 }
 
 variable "cloudwatch-alarm-arn" {
   type    = string
   default = null
   validation {
-    condition     = var.enable-alerting == true
-    error_message = "Alerting must be enabled for the Cloudwatch alarm to be utilised."
+    condition = startswith(var.cloudwatch-alarm-arn, "arn")
+    error_message = "The arn must be a full arn, not a name or an id."
   }
 }
 
