@@ -47,7 +47,7 @@ resource "aws_secretsmanager_secret" "db" {
 
 resource "aws_secretsmanager_secret_version" "db" {
   count     = var.dbs-credentials-secrets != null ? 1 : 0
-  secret_id = aws_secretsmanager_secret.db.id
+  secret_id = aws_secretsmanager_secret.db[0].id
   secret_string = jsonencode({
     "username" = var.username
     "password" = var.password != null ? var.password : random_password.db[0].result
