@@ -126,7 +126,7 @@ variable "cloudwatch-alarm-arn" {
   type    = string
   default = null
   validation {
-    condition = startswith(var.cloudwatch-alarm-arn, "arn")
+    condition = var.cloudwatch-alarm-arn == null || startswith(var.cloudwatch-alarm-arn, "arn")
     error_message = "The arn must be a full arn, not a name or an id."
   }
 }
