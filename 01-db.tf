@@ -23,7 +23,7 @@ locals {
 }
 
 resource "helm_release" "db" {
-  repository       = "oci://registry_1.docker.io/bitnamicharts"
+  repository       = "https://charts.bitnami.com/bitnami"
   chart            = "cassandra"
   namespace        = var.cassandra-namespace
   name             = "cassandra"
