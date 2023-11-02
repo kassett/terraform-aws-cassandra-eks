@@ -51,12 +51,12 @@ data "kubernetes_service" "db" {
 }
 
 resource "aws_secretsmanager_secret" "db" {
-  count       = var.dbs-credentials-secrets != null ? 1 : 0
-  name_prefix = var.dbs-credentials-secrets
+  count       = var.dbs-credentials-secret-name != null ? 1 : 0
+  name_prefix = var.dbs-credentials-secret-name
 }
 
 resource "aws_secretsmanager_secret_version" "db" {
-  count     = var.dbs-credentials-secrets != null ? 1 : 0
+  count     = var.dbs-credentials-secret-name != null ? 1 : 0
   secret_id = aws_secretsmanager_secret.db[0].id
   secret_string = jsonencode({
     "username" = var.username

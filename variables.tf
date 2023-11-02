@@ -136,7 +136,7 @@ variable "environment" {
   default = "stage"
 }
 
-variable "dbs-credentials-secrets" {
+variable "dbs-credentials-secret-name" {
   type        = string
   default     = null
   description = "If a secret name is specified, then an AWS Secret will be uploaded with the DNS hostnames, username, and password."
