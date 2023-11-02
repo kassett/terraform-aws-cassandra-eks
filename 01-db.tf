@@ -5,8 +5,6 @@ resource "random_password" "db" {
   min_special = 2
 }
 
-check 
-
 locals {
   basic-db-configurations = {
     "image.registry"            = var.image-registry
