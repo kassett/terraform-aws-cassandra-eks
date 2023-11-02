@@ -7,7 +7,7 @@ variable "image-repository" {
 
 variable "image-registry" {
   type        = string
-  default     = "docker.io"
+  default     = "registry-1.docker.io"
   description = "Specify a registry other docker.io."
 }
 
