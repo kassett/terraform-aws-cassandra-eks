@@ -43,8 +43,10 @@ resource "helm_release" "db" {
 }
 
 data "kubernetes_service" "db" {
-  namespace = helm_release.db.namespace
-  name      = "cassandra"
+  metadata {
+    namespace = helm_release.db.namespace
+    name      = "cassandra"
+  }
   depends_on = [helm_release.db]
 }
 
