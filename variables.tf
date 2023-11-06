@@ -122,13 +122,20 @@ variable "enable-alerting" {
   default = true
 }
 
-variable "cloudwatch-alarm-arn" {
-  type    = string
-  default = null
-  validation {
-    condition = var.cloudwatch-alarm-arn == null || try(startswith(var.cloudwatch-alarm-arn, "arn"), false)
-    error_message = "The arn must be a full arn, not a name or an id."
-  }
+variable "cluster-name" {
+  type = string
+}
+
+variable "create-cloudwatch-exporter" {
+  default = false
+  type = bool
+  description = "Only one deployment need exist per cluster. If it already exists, this can be false."
+}
+
+variable "cloudwatch-exporter-namespace" {
+  type = string
+  default = "cloudwatch"
+  description = "If this resource is created, it will be created in the cloudwatch namespace."
 }
 
 variable "environment" {

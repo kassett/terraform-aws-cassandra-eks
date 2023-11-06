@@ -10,5 +10,9 @@ output "password" {
 }
 
 output "uri" {
-  value = try(data.kubernetes_service.db.status.0.load_balancer.0.ingress.0.hostname, "")
+  value = try(data.kubernetes_service.db.status.0.load_balancer.0.ingress.0.hostname, null)
+}
+
+output "cloudwatch-exporter-iam-role" {
+  value = try(aws_iam_role.irsa[0].arn, null)
 }
