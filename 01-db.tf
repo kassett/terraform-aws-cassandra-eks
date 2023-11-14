@@ -46,7 +46,7 @@ resource "helm_release" "db" {
     for_each = local.basic-db-configurations
     content {
       name  = set.key
-      value = type(set.value) == "list" ? "{${join(",", set.value)}}" : set.value
+      value = type(set.value) == "list" ? "{${join(",", set.value)}}" : tostring(set.value)
     }
   }
 }
