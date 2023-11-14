@@ -24,7 +24,7 @@ locals {
     "metrics.enabled"                  = var.enable-prometheus-metrics
     "metrics.serviceMonitor.namespace" = var.prometheus-namespace
     "metrics.serviceMonitor.enabled"   = var.enable-prometheus-metrics
-    "service.loadBalancerSourceRanges" = var.allowed-nlb-cidr-blocks
+    "service.loadBalancerSourceRanges" = "{${join(",", var.allowed-nlb-cidr-blocks)}}"
   }
 }
 
@@ -46,7 +46,7 @@ resource "helm_release" "db" {
     for_each = local.basic-db-configurations
     content {
       name  = set.key
-      value = type(set.value) == "list" ? "{${join(",", set.value)}}" : tostring(set.value)
+      value = set.value
     }
   }
 }
