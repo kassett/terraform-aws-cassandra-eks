@@ -17,7 +17,7 @@ locals {
 }
 
 data "aws_iam_policy_document" "assume_role_service_account" {
-  count = var.enable-alerting && var.create-cloudwatch-exporter
+  count = var.enable-alerting && var.create-cloudwatch-exporter ? 1 : 0
   statement {
     effect = "Allow"
 
@@ -43,8 +43,8 @@ data "aws_iam_policy_document" "assume_role_service_account" {
 }
 
 resource "aws_iam_role" "irsa" {
-  count = var.enable-alerting && var.create-cloudwatch-exporter
-  name_prefix = "cassandra"
+  count              = var.enable-alerting && var.create-cloudwatch-exporter ? 1 : 0
+  name_prefix        = "cassandra"
   assume_role_policy = data.aws_iam_policy_document.assume_role_service_account[0].json
 
   tags = {
@@ -56,17 +56,17 @@ resource "aws_iam_role" "irsa" {
 }
 
 resource "helm_release" "cloudwatch-exporter" {
-  count = var.enable-alerting && var.create-cloudwatch-exporter
+  count      = var.enable-alerting && var.create-cloudwatch-exporter ? 1 : 0
   repository = "https://prometheus-community.github.io/helm-charts"
-  name = "prometheus-cloudwatch-exporter"
-  chart = "prometheus-community/prometheus-cloudwatch-exporter"
-  namespace = var.cloudwatch-exporter-namespace
+  name       = "prometheus-cloudwatch-exporter"
+  chart      = "prometheus-cloudwatch-exporter"
+  namespace  = var.cloudwatch-exporter-namespace
 
   create_namespace = true
-  recreate_pods = True
+  recreate_pods    = true
 
   set {
-    name = "aws.role"
+    name  = "aws.role"
     value = aws_iam_role.irsa[0].arn
   }
 

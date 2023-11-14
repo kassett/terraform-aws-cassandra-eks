@@ -64,12 +64,6 @@ variable "service-type" {
   description = "The type of service exposing the Cassandra statefulset. Other options include ClusterIP and NodePort."
 }
 
-variable "prometheus-annotations" {
-  type        = string
-  default     = null
-  description = "Annotations to be attached to Prometheus sidecar."
-}
-
 variable "cql-port" {
   type    = number
   default = 9042
@@ -95,6 +89,11 @@ variable "password" {
   type        = string
   default     = null
   description = "If the password is left as null, it will be automatically generated."
+
+  validation {
+    condition     = var.password == null || can(regex("^[0-9A-Za-z]+$", var.password))
+    error_message = "Cassandra doesn't work well with passwords with special characters."
+  }
 }
 
 variable "seed-count" {
@@ -127,14 +126,14 @@ variable "cluster-name" {
 }
 
 variable "create-cloudwatch-exporter" {
-  default = false
-  type = bool
+  default     = false
+  type        = bool
   description = "Only one deployment need exist per cluster. If it already exists, this can be false."
 }
 
 variable "cloudwatch-exporter-namespace" {
-  type = string
-  default = "cloudwatch"
+  type        = string
+  default     = "cloudwatch"
   description = "If this resource is created, it will be created in the cloudwatch namespace."
 }
 
@@ -165,6 +164,12 @@ variable "service-account-name" {
   type        = string
   default     = "cassandra"
   description = "The name of the service account for the statefulset to use."
+}
+
+variable "allowed-nlb-cidr-blocks" {
+  type = list(string)
+  default = ["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"]
+  description = "The CIDR blocks allowed by the load balancer."
 }
 
 variable "create-service-account" {

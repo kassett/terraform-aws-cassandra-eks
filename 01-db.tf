@@ -1,26 +1,30 @@
 
 resource "random_password" "db" {
-  count       = var.password == null ? 1 : 0
-  length      = 16
-  min_special = 2
+  count   = var.password == null ? 1 : 0
+  length  = 16
+  special = false
 }
 
 locals {
   basic-db-configurations = {
-    "image.registry"            = var.image-registry
-    "image.repository"          = var.image-repository
-    "image.tag"                 = var.image-tag
-    "replicaCount"              = var.replicas
-    "cluster.seedCount"         = var.seed-count
-    "persistence.storageClass"  = var.storage-class
-    "service.type"              = var.service-type
-    "service.ports.cql"         = var.cql-port
-    "serviceAccount.name"       = var.service-account-name
-    "serviceAccount.create"     = var.create-service-account
-    "persistence.size"          = var.volume-storage-size
-    "persistence.commitLogsize" = var.commit-log-volume-size
-    "dbUser.user"               = var.username
-    "dbUser.password"           = var.password != null ? var.password : random_password.db[0].result
+    "image.registry"                   = var.image-registry
+    "image.repository"                 = var.image-repository
+    "image.tag"                        = var.image-tag
+    "replicaCount"                     = var.replicas
+    "cluster.seedCount"                = var.seed-count
+    "persistence.storageClass"         = var.storage-class
+    "service.type"                     = var.service-type
+    "service.ports.cql"                = var.cql-port
+    "serviceAccount.name"              = var.service-account-name
+    "serviceAccount.create"            = var.create-service-account
+    "persistence.size"                 = var.volume-storage-size
+    "persistence.commitLogsize"        = var.commit-log-volume-size
+    "dbUser.user"                      = var.username
+    "dbUser.password"                  = var.password != null ? var.password : random_password.db[0].result
+    "metrics.enabled"                  = var.enable-prometheus-metrics
+    "metrics.serviceMonitor.namespace" = var.prometheus-namespace
+    "metrics.serviceMonitor.enabled"   = var.enable-prometheus-metrics
+    "service.loadBalancerSourceRanges" = var.allowed-nlb-cidr-blocks
   }
 }
 
@@ -33,11 +37,16 @@ resource "helm_release" "db" {
   create_namespace = true
   recreate_pods    = true
 
+  values = concat(
+    [],
+    var.additional-db-helm-configurations != null ? var.additional-db-helm-configurations : []
+  )
+
   dynamic "set" {
     for_each = local.basic-db-configurations
     content {
       name  = set.key
-      value = set.value
+      value = type(set.value) == "list" ? "{${join(",", set.value)}}" : set.value
     }
   }
 }
